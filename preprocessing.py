@@ -1,6 +1,8 @@
 import json
 import re
-import os
+
+# TODO: process parts of lyrics
+# TODO: process stop words
 
 
 def process_json_file(file_path: str) -> str:
@@ -14,15 +16,20 @@ def process_json_file(file_path: str) -> str:
         print(f"Read error – {file_path}: {e}")
         return
 
+def delete_parts_of_lyrics(text: str) -> str:
+    parts_of_lyrics = re.findall(r'\[(.*?)\]', text)
+    for part in parts_of_lyrics:
+        text = text.replace(f"[{part}]", "")
+    return text
 
 def processing_lyrics(text: str) -> str:
     text = text.strip().lower()
-    # text = re.sub(r"[^a-zа-я\s]", "", text)
+    text = delete_parts_of_lyrics(text)
+    text = re.sub(r"[^a-zа-я\s]", "", text)
     return text
 
 
 if __name__ == "__main__":
-    a = process_json_file("/Users/mac/Desktop/Recommended System/tracks/with_lyrics/0A189BUGs0WHvEA09bWdA6.json")
-    print(a)
-
+    text = "1234567890"
+    print(replace_numeric_to_text(text))
 
