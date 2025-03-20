@@ -3,35 +3,26 @@ import re
 import os
 
 
-def process_json_files(folder_path):
-    """Обрабатывает все JSON-файлы в указанной папке, очищает текст и выводит результат."""
+def process_json_file(file_path: str) -> str:
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        if "lyrics" in data:
+            return processing_lyrics(data["lyrics"])
+        return ""
+    except Exception as e:
+        print(f"Read error – {file_path}: {e}")
+        return
 
-    for file_name in os.listdir(folder_path):
-        if not file_name.endswith(".json"):
-            continue  # Пропускаем не JSON-файлы
 
-        file_path = os.path.join(folder_path, file_name)
+def processing_lyrics(text: str) -> str:
+    text = text.strip().lower()
+    # text = re.sub(r"[^a-zа-я\s]", "", text)
+    return text
 
-        try:
-            with open(file_path, "r", encoding="utf-8") as f:
-                raw_content = f.read()  # Читаем файл как строку
 
-            try:
-                data = json.loads(raw_content)  # Пробуем распарсить JSON
-            except json.JSONDecodeError as e:
-                print(f"❌ Ошибка JSON в файле {file_name}: {e}")
-                print(
-                    f"🔍 Содержимое файла:\n{raw_content[:500]}...\n"
-                )  # Выведем первые 500 символов
-                data = {}  # Если JSON сломан, создаём пустой словарь
+if __name__ == "__main__":
+    a = process_json_file("/Users/mac/Desktop/Recommended System/tracks/with_lyrics/0A189BUGs0WHvEA09bWdA6.json")
+    print(a)
 
-            # Берём текст (если `lyrics` нет, просто пустая строка)
-            lyrics = data.get("lyrics", "").strip().lower()
 
-            # Очищаем текст (оставляем только буквы и пробелы)
-            clean_lyrics = re.sub(r"[^a-zа-я\s]", "", lyrics)
-
-            print(f"\n--- {file_name} ---\n{clean_lyrics or '⚠️ Нет текста'}")
-
-        except Exception as e:
-            print(f"❌ Ошибка с файлом {file_name}: {e}")
