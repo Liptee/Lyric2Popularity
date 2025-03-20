@@ -5,9 +5,8 @@ import os
 
 from env import SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, SPOTIPY_REDIRECT_URI, GENIUS_ACCESS_TOKEN
 
-QUERY = "popular"
-N = 10
-
+QUERY = "top"
+N = 20
 
 tracks_path = "tracks/with_lyrics"
 files_with_lyrics = os.listdir(tracks_path)
@@ -30,7 +29,6 @@ results = sp.search(q=QUERY, type="playlist", limit=N)
 playlists = results.get("playlists", {}).get("items", [])
 
 genius = lg.Genius(GENIUS_ACCESS_TOKEN)
-
 
 for playlist in playlists:
     try:
@@ -86,7 +84,7 @@ for playlist in playlists:
                 json.dump(song_info, f)
 
     except Exception as e:
-        print(f"Error processing playlist {playlist_name}")
+        print(f"Error processing playlist {playlist}")
         print(e)
         continue
     print("---"*10)
