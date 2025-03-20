@@ -2,26 +2,36 @@ import json
 import re
 import os
 
-folder_path = "/Users/royalskifm/Downloads/Spotify"
 
-for file_name in os.listdir(folder_path):
-    if not file_name.endswith(".json"):
-        continue  # Пропускаем не JSON-файлы
+def process_json_files(folder_path):
+    """Обрабатывает все JSON-файлы в указанной папке, очищает текст и выводит результат."""
 
-    file_path = os.path.join(folder_path, file_name)
+    for file_name in os.listdir(folder_path):
+        if not file_name.endswith(".json"):
+            continue  # Пропускаем не JSON-файлы
 
-    try:
-        with open(file_path, "r", encoding="utf-8") as f:
-            data = json.load(f)
+        file_path = os.path.join(folder_path, file_name)
 
-        lyrics = data.get("lyrics", "").strip().lower()  # Приводим к нижнему регистру
-        if not lyrics:
-            continue  # Пропускаем файлы без текста
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                raw_content = f.read()  # Читаем файл как строку
 
-        # Очищаем текст (оставляем только буквы и пробелы)
-        clean_lyrics = re.sub(r"[^a-zа-я\s]", "", lyrics)
+            try:
+                data = json.loads(raw_content)  # Пробуем распарсить JSON
+            except json.JSONDecodeError as e:
+                print(f"❌ Ошибка JSON в файле {file_name}: {e}")
+                print(
+                    f"🔍 Содержимое файла:\n{raw_content[:500]}...\n"
+                )  # Выведем первые 500 символов
+                data = {}  # Если JSON сломан, создаём пустой словарь
 
-        print(f"\n--- {file_name} ---\n{clean_lyrics}")
+            # Берём текст (если `lyrics` нет, просто пустая строка)
+            lyrics = data.get("lyrics", "").strip().lower()
 
-    except (json.JSONDecodeError, FileNotFoundError) as e:
-        print(f"❌ Ошибка в файле {file_name}: {e}")
+            # Очищаем текст (оставляем только буквы и пробелы)
+            clean_lyrics = re.sub(r"[^a-zа-я\s]", "", lyrics)
+
+            print(f"\n--- {file_name} ---\n{clean_lyrics or '⚠️ Нет текста'}")
+
+        except Exception as e:
+            print(f"❌ Ошибка с файлом {file_name}: {e}")
