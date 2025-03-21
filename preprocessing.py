@@ -29,7 +29,4 @@ def processing_lyrics(text: str) -> str:
     return text
 
 
-if __name__ == "__main__":
-    text = "1234567890"
-    print(replace_numeric_to_text(text))
 
