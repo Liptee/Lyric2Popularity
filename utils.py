@@ -5,6 +5,21 @@ from glob import glob
 import json
 import pandas as pd
 
+all_fields = [
+    "available_markets",
+    "explicit",
+    "track_id",
+    "release_date",
+    "track_artist",
+    "artist_id",
+    "track_name",
+    "album_name",
+    "album_id",
+    "duration_ms",
+    "popularity",
+    "lyrics"
+]
+
 
 def load_json_data(file_path: str, columns: List) -> Dict:
     with open(file_path, "r") as f:
@@ -30,3 +45,22 @@ def delete_parts_of_lyrics(text: str) -> str:
     for part in parts_of_lyrics:
         text = text.replace(f"[{part}]", "")
     return text
+
+
+def convert_jsons_to_csv(data_dir: str, columns: List) -> pd.DataFrame:
+    data = []
+    for file in glob(os.path.join(data_dir, "*.json")):
+        json_data = load_json_data(
+            file_path=file,
+            columns=columns)
+        data.append(json_data)
+    
+    # data_to_csv
+    df = pd.DataFrame(data)
+    df.to_csv("tracks_data.csv", index=False)
+    return df
+
+
+if __name__ == "__main__":
+    convert_jsons_to_csv("tracks/with_lyrics", 
+                         columns=all_fields)
