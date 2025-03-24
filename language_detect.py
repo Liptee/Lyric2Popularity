@@ -1,7 +1,9 @@
 import fasttext
+from env import DATA_DIR
+import os
+from preprocessing import process_json_file
 
 class LanguageIdentification:
-
     def __init__(self):
         pretrained_lang_model = "language_models/lid.176.bin"
         self.model = fasttext.load_model(pretrained_lang_model)
@@ -12,6 +14,13 @@ class LanguageIdentification:
         return predictions
 
 if __name__ == '__main__':
-    LANGUAGE = LanguageIdentification()
-    lang = LANGUAGE.predict_lang("Привет, как дела?")
-    print(lang)
+    for file in os.listdir(DATA_DIR):
+        text = process_json_file(os.path.join(DATA_DIR, file))
+
+        # remove \n
+        text = text.replace("\n", "")
+        # predict language
+        LANGUAGE = LanguageIdentification()
+        predictions = LANGUAGE.predict_lang(text)
+        print(predictions)
+

@@ -16,11 +16,6 @@ def process_json_file(file_path: str) -> str:
         print(f"Read error – {file_path}: {e}")
         return
 
-def delete_parts_of_lyrics(text: str) -> str:
-    parts_of_lyrics = re.findall(r'\[(.*?)\]', text)
-    for part in parts_of_lyrics:
-        text = text.replace(f"[{part}]", "")
-    return text
 
 def processing_lyrics(text: str) -> str:
     text = text.strip().lower()
