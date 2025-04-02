@@ -29,7 +29,5 @@ The collection tactic is to specify a query to search for user's playlists on Sp
 6. **find_all_parts_of_lyrics.py**: Extracts structural parts of the lyrics (e.g., `[Verse]` – *(Куплет)*, `[Chorus]` – *(Припев)*) for further analysis.
 
 ## Future steps
-- get minimum error on baseline method (TF-IDF + XGBoost)
-- create script for splitting songs by languages
 - add model to tag each song (it may be useful for semantic alanlyse and further storage data in Neo4J)
 - migrate all data on Neo4J cluster
