@@ -2,9 +2,13 @@ import spotipy
 import lyricsgenius as lg
 import json
 import os
+from time import sleep
 
 from env import SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, SPOTIPY_REDIRECT_URI, GENIUS_ACCESS_TOKEN
 
+
+sleep_time = 0
+N = 20
 quaries = ["United Albums", 
            "Radiohead", 
            "Beatles", 
@@ -61,38 +65,39 @@ quaries = ["United Albums",
            "Romania",
            "Bulgaria"
            ]
+
+tracks_path = "tracks/with_lyrics"
+files_with_lyrics = os.listdir(tracks_path)
+ids_with_lyrics = [file.split(".")[0] for file in files_with_lyrics]
+
+tracks_path = "tracks/no_lyrics"
+files_no_lyrics = os.listdir(tracks_path)
+ids_no_lyrics = [file.split(".")[0] for file in files_no_lyrics]
+
+ids = ids_with_lyrics + ids_no_lyrics
+
+scope = "playlist-modify-public"
+
+auth = spotipy.oauth2.SpotifyOAuth(SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, SPOTIPY_REDIRECT_URI, scope=scope)
+token_dict = auth.get_access_token()
+token = token_dict['access_token']
+sp = spotipy.Spotify(auth=token)
+
+genius = lg.Genius(GENIUS_ACCESS_TOKEN)
+
 for QUERY in quaries:
-    N = 20
-
-    tracks_path = "tracks/with_lyrics"
-    files_with_lyrics = os.listdir(tracks_path)
-    ids_with_lyrics = [file.split(".")[0] for file in files_with_lyrics]
-
-    tracks_path = "tracks/no_lyrics"
-    files_no_lyrics = os.listdir(tracks_path)
-    ids_no_lyrics = [file.split(".")[0] for file in files_no_lyrics]
-
-    ids = ids_with_lyrics + ids_no_lyrics
-
-    scope = "playlist-modify-public"
-
-    auth = spotipy.oauth2.SpotifyOAuth(SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, SPOTIPY_REDIRECT_URI, scope=scope)
-    token_dict = auth.get_access_token()
-    token = token_dict['access_token']
-    sp = spotipy.Spotify(auth=token)
-
     results = sp.search(q=QUERY, type="playlist", limit=N)
     playlists = results.get("playlists", {}).get("items", [])
 
-    genius = lg.Genius(GENIUS_ACCESS_TOKEN)
-
     for playlist in playlists:
         try:
+            print("Spotify API:")
             playlist_id = playlist["id"]
             playlist_name = playlist["name"]
             tracks_data = sp.playlist_tracks(playlist_id)
             tracks = tracks_data.get('items', [])
             for track in tracks:
+                sleep(sleep_time)
                 try:
                     available_markets = track["track"]["available_markets"]
                     explicit = track["track"]["explicit"]
@@ -112,7 +117,7 @@ for QUERY in quaries:
                 # Skip if the track is already in the dataset
                 if track_id in ids:
                     continue
-                
+                print("Genius API:")
                 genius_song = genius.search_song(track_name, track_artist)
                 if genius_song:
                     lyrics = genius_song.lyrics
