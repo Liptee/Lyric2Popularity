@@ -2,6 +2,7 @@ import os
 import json
 import spacy
 from tqdm import tqdm
+import pytextrank
 from sklearn.feature_extraction.text import TfidfVectorizer
 from keybert import KeyBERT
 from sentence_transformers import SentenceTransformer

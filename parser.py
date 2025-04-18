@@ -9,39 +9,39 @@ from env import SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, SPOTIPY_REDIRECT_URI, 
 
 sleep_time = 0
 N = 20
-quaries = ["United Albums", 
-           "Radiohead", 
-           "Beatles", 
-           "Rolling Stones",
-           "Queen",
-           "Coldplay",
-           "Eminem",
-           "Taylor Swift",
-           "Adele",
-           "Ed Sheeran",
-           "Kendrick Lamar",
-           "Drake",
-           "Post Malone",
-           "Travis Scott",
-           "Billie Eilish",
-           "Ariana Grande",
-           "The Smiths",
-           "Muse",
-           "Cyberpunk",
-           "Matrix",
-           "Dad rock",
-           "Grunge",
-           "Britpop",
-           "Nu-metal",
-           "Hip-hop",
-           "Rap",
-           "Country",
-           "Blues",
-           "Jazz",
-           "Funk",
-           "Soul",
-           "R&B",
-           "Russian",
+quaries = [#"United Albums", 
+           #"Radiohead", 
+           #"Beatles", 
+           #"Rolling Stones",
+           #"Queen",
+           #"Coldplay",
+           #"Eminem",
+           #"Taylor Swift",
+           #"Adele",
+           #"Ed Sheeran",
+           #"Kendrick Lamar",
+           #"Drake",
+           #"Post Malone",
+           #"Travis Scott",
+           #"Billie Eilish",
+           #"Ariana Grande",
+           #"The Smiths",
+           #"Muse",
+           #"Cyberpunk",
+           #"Matrix",
+           #"Dad rock",
+           #"Grunge",
+           #"Britpop",
+           #"Nu-metal",
+           #"Hip-hop",
+           #"Rap",
+           #"Country",
+           #"Blues",
+           #"Jazz",
+           #"Funk",
+           #"Soul",
+           #"R&B",
+           #"Russian",
            "USA",
            "UK",
            "France",
@@ -66,6 +66,7 @@ quaries = ["United Albums",
            "Bulgaria"
            ]
 
+
 tracks_path = "tracks/with_lyrics"
 files_with_lyrics = os.listdir(tracks_path)
 ids_with_lyrics = [file.split(".")[0] for file in files_with_lyrics]
@@ -86,6 +87,8 @@ sp = spotipy.Spotify(auth=token)
 genius = lg.Genius(GENIUS_ACCESS_TOKEN)
 
 for QUERY in quaries:
+    print(f"Processing {QUERY}")
+    print("="*30)
     results = sp.search(q=QUERY, type="playlist", limit=N)
     playlists = results.get("playlists", {}).get("items", [])
 

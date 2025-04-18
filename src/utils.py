@@ -59,8 +59,3 @@ def convert_jsons_to_csv(data_dir: str, columns: List) -> pd.DataFrame:
     df = pd.DataFrame(data)
     df.to_csv("tracks_data.csv", index=False)
     return df
-
-
-if __name__ == "__main__":
-    convert_jsons_to_csv("tracks/with_lyrics", 
-                         columns=all_fields)
