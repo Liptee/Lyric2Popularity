@@ -1,9 +1,9 @@
 from env import DATA_DIR
 import os
-from preprocessing import process_json_file
 import json
 from tqdm import tqdm
 from src.lang_identification import LanguageIdentification, detect_lang, safe_decode
+from src.utils import load_json_data
 
 
 def make_language_mapping(path_to_dir, 
@@ -12,7 +12,7 @@ def make_language_mapping(path_to_dir,
     language_model = LanguageIdentification()
     lang_to_files = {}
     for file in tqdm(os.listdir(path_to_dir)):
-        text = process_json_file(os.path.join(path_to_dir, file))
+        text = load_json_data(os.path.join(path_to_dir, file), ["lyrics"])["lyrics"]
         text = safe_decode(text)
         langs = detect_lang(language_model,
                             text,
@@ -29,5 +29,5 @@ def make_language_mapping(path_to_dir,
         json.dump(lang_to_files, f, ensure_ascii=False, indent=4)
 
 if __name__ == "__main__":
-    make_language_mapping(DATA_DIR, "tracks", 0.8)
+    make_language_mapping(DATA_DIR, "tracks", 0.6)
 
